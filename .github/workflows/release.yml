@@ -37,11 +37,11 @@ jobs:
           files: build/
           dest: build.zip
 
-      - name: Get commit messages
-        id: commit_messages
-        run: |
-          COMMIT_MESSAGES=$(git log --pretty=format:"- %s" $(git describe --tags --abbrev=0)..${{ github.sha }})
-          echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
+      # - name: Get commit messages
+      #   id: commit_messages
+      #   run: |
+      #     COMMIT_MESSAGES=$(git log --pretty=format:"- %s" $(git describe --tags --abbrev=0)..${{ github.sha }})
+      #     echo "::set-output name=commit_messages::$COMMIT_MESSAGES"
 
       - name: Create Release
         uses: ncipollo/release-action@v1
@@ -50,9 +50,9 @@ jobs:
           tag: ${{ steps.tag_version.outputs.new_tag }}
           generateReleaseNotes: true
           artifacts: build
-          body: |
-            Changes in this release:
-            ${{ steps.commit_messages.outputs.commit_messages }}
+          # body: |
+          #   Changes in this release:
+          #   ${{ steps.commit_messages.outputs.commit_messages }}
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
