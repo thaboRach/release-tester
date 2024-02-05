@@ -1,0 +1,51 @@
+name: Update version and Create release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version name"
+        required: true
+        default: "minor"
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Upload artifact(build)
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build
+
+      - uses: vimtor/action-zip@v1
+        with:
+          files: build/
+          dest: build.zip
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          name: Release ${{ github.ref_name }}
+          tag: ${{ github.event.inputs.version }}
+          generateReleaseNotes: true
+          artifacts: build
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
