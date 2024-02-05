@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -40,8 +42,10 @@ jobs:
           dest: build.zip
 
       - name: Determine current version
-        id: version
-        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+        uses: rickstaa/action-get-semver@v1
+        id: get_semver
+        with:
+          bump_level: "${{github.event.inputs.version}}"
 
       # - name: Determine current version
       #   id: version
@@ -49,17 +53,17 @@ jobs:
       #     current_version=$(git describe --tags --abbrev=0)
       #     echo "::set-output name=current_version::$current_version"
 
-      - name: Determine new version
-        id: bump
-        run: |
-          new_version=$(semver bump ${{ github.event.inputs.version }} ${{ steps.version.outputs.tag }})
-          echo "::set-output name=new_version::$new_version"
+      # - name: Determine new version
+      #   id: bump
+      #   run: |
+      #     new_version=$(semver bump ${{ github.event.inputs.version }} ${{ steps.version.outputs.tag }})
+      #     echo "::set-output name=new_version::$new_version"
 
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
           name: Release ${{ github.ref_name }}
-          tag: ${{ steps.bump.outputs.new_version }}
+          tag: ${{ steps.get_semver.outputs.next_version }}
           generateReleaseNotes: true
           artifacts: build
 
