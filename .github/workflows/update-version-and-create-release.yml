@@ -41,14 +41,18 @@ jobs:
 
       - name: Determine current version
         id: version
-        run: |
-          current_version=$(git describe --tags --abbrev=0)
-          echo "::set-output name=current_version::$current_version"
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+
+      # - name: Determine current version
+      #   id: version
+      #   run: |
+      #     current_version=$(git describe --tags --abbrev=0)
+      #     echo "::set-output name=current_version::$current_version"
 
       - name: Determine new version
         id: bump
         run: |
-          new_version=$(semver bump ${{ github.event.inputs.version }} ${{ steps.version.outputs.current_version }})
+          new_version=$(semver bump ${{ github.event.inputs.version }} ${{ steps.version.outputs.tag }})
           echo "::set-output name=new_version::$new_version"
 
       - name: Create Release
