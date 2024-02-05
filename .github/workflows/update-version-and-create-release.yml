@@ -3,10 +3,10 @@ name: Update version and Create release
 on:
   workflow_dispatch:
     inputs:
-      version:
+      version-bump:
         description: "Version name"
         required: true
-        default: "minor"
+        default: "patch"
         type: choice
         options:
           - major
@@ -36,7 +36,8 @@ jobs:
           name: build
           path: build
 
-      - uses: vimtor/action-zip@v1
+      - name: Archive artifact
+        uses: vimtor/action-zip@v1
         with:
           files: build/
           dest: build.zip
@@ -45,24 +46,12 @@ jobs:
         uses: rickstaa/action-get-semver@v1
         id: get_semver
         with:
-          bump_level: "${{github.event.inputs.version}}"
-
-      # - name: Determine current version
-      #   id: version
-      #   run: |
-      #     current_version=$(git describe --tags --abbrev=0)
-      #     echo "::set-output name=current_version::$current_version"
-
-      # - name: Determine new version
-      #   id: bump
-      #   run: |
-      #     new_version=$(semver bump ${{ github.event.inputs.version }} ${{ steps.version.outputs.tag }})
-      #     echo "::set-output name=new_version::$new_version"
+          bump_level: "${{github.event.inputs.version-bump}}"
 
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          name: Release ${{ github.ref_name }}
+          name: Release ${{ steps.get_semver.outputs.next_version }}
           tag: ${{ steps.get_semver.outputs.next_version }}
           generateReleaseNotes: true
           artifacts: build
