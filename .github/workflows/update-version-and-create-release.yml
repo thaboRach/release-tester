@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: yarn
 
+      - name: Build
+        run: yarn build
+
       - name: Upload artifact(build)
         uses: actions/upload-artifact@v3
         with:
