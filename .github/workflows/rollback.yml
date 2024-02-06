@@ -17,8 +17,9 @@ jobs:
         run: |
           git fetch --tags
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          echo "::set-output name=previous_version::${latest_tag}"
+          previous_major_version=$(echo $latest_tag | cut -d. -f1)
+          echo "::set-output name=previous_version::${previous_major_version}"
 
       - name: Use Previous Version
         run: |
-          echo "Previous Version: ${{ steps.get_previous_semver.outputs.previous_version }}
+          echo "Previous Version: ${{ steps.get_previous_semver.outputs.previous_version }}"
