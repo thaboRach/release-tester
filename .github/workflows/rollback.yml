@@ -20,6 +20,27 @@ jobs:
           previous_major_version=$(echo $latest_tag | cut -d. -f1).0.0
           echo "::set-output name=previous_version::${previous_major_version}"
 
-      - name: Use Previous Version
+      - name: Get current version
+        uses: rickstaa/action-get-semver@v1
+        id: get_semver
+
+      - name: Print Previous Version
         run: |
           echo "Previous Version: ${{ steps.get_previous_semver.outputs.previous_version }}"
+
+      - name: Print Current Version
+        run: |
+          echo "Previous Version: ${{ steps.get_semver.outputs.current_version }}"
+
+      - name: Pull Octopilot image
+        run: docker pull ghcr.io/dailymotion-oss/octopilot:v1.9.7
+
+      - name: Create PR with Octpilot in Deployment repo
+        run: |
+          docker run ghcr.io/dailymotion-oss/octopilot:v1.9.7 \
+          --github-token ${{ secrets.DEPLOY_TESTER_REPO_ACCESS_TOKEN }} \
+          --repo "thaboRach/deploy-tester" \
+          --update "yaml(file=deployment.yml,path='frontend.prod')=${{ steps.get_previous_semver.outputs.previous_version }}" \
+          --pr-title "Release: Rollback Production from ${{steps.get_semver.outputs.current_version}} to  ${{ steps.get_previous_semver.outputs.previous_version }}" \
+          --pr-base-branch "main" \
+          --pr-merge "true"
