@@ -65,6 +65,6 @@ jobs:
           --update "yaml(file=deployment.yml,path='frontend.qa')=${{ steps.get_semver.outputs.next_version }}" \
           --update "yaml(file=deployment.yml,path='frontend.stg')=${{ steps.get_semver.outputs.next_version }}" \
           --update "yaml(file=deployment.yml,path='frontend.prod')=${{ steps.get_semver.outputs.next_version }}" \
-          --pr-title "Release: Promoting ${{ steps.get_semver.outputs.next_version }} to Dev & QA environment" \
+          --pr-title "Release: Promoting ${{ steps.get_semver.outputs.next_version }} to Prod & Non-Prod environment" \
           --pr-base-branch "main" \
           --pr-merge "true"
