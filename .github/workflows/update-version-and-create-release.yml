@@ -66,7 +66,7 @@ jobs:
         run: |
           docker run ghcr.io/dailymotion-oss/octopilot:v1.9.7 \
           --github-token ${{ secrets.DEPLOY_TESTER_REPO_ACCESS_TOKEN }} \
-          --repo "deploy-tester" \
+          --repo "thaboRach/deploy-tester" \
           --update "yaml(file=deployment.yaml,path='frontend.dev')=${{ steps.get_semver.outputs.next_version }}" \
           --update "yaml(file=deployment.yaml,path='frontend.qa')=${{ steps.get_semver.outputs.next_version }}" \
           --pr-title "Release: Promoting ${{ steps.get_semver.outputs.next_version }} to Dev & QA environment" \
