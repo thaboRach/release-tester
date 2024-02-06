@@ -1,4 +1,4 @@
-name: Update version and Create release
+name: Non-Prod release
 
 on:
   workflow_dispatch:
@@ -9,14 +9,12 @@ on:
         default: "patch"
         type: choice
         options:
-          - major
           - minor
           - patch
 
 jobs:
   create-release:
     runs-on: ubuntu-latest
-    environment: release
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
