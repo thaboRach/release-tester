@@ -60,15 +60,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull Octopilot image
-        run: docker pull ghcr.io/dailymotion-oss/octopilot:v1.2.0
+        run: docker pull ghcr.io/dailymotion-oss/octopilot:v1.9.7
 
       - name: Create PR with Octpilot in Deployment repo
         run: |
-          docker run ghcr.io/dailymotion-oss/octopilot:v1.2.0 \
+          docker run ghcr.io/dailymotion-oss/octopilot:v1.9.7 \
           --github-token ${{ secrets.DEPLOY_TESTER_REPO_ACCESS_TOKEN }} \
-          --repo "thaboRach/deploy-tester" \
-          --update "yaml(file=deployment.yaml,path='frontend.dev')=${{ steps.tag_version.outputs.new_tag }}" \
-          --update "yaml(file=deployment.yaml,path='frontend.qa')=${{ steps.tag_version.outputs.new_tag }}" \
-          --pr-title "Release: Promoting ${{ steps.tag_version.outputs.new_tag }} to Dev & QA environment" \
+          --repo "deploy-tester" \
+          --update "yaml(file=deployment.yaml,path='frontend.dev')=${{ steps.get_semver.outputs.next_version }}" \
+          --update "yaml(file=deployment.yaml,path='frontend.qa')=${{ steps.get_semver.outputs.next_version }}" \
+          --pr-title "Release: Promoting ${{ steps.get_semver.outputs.next_version }} to Dev & QA environment" \
           --pr-base-branch "main" \
           --pr-merge "true"
