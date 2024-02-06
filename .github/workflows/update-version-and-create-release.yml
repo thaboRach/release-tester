@@ -14,7 +14,7 @@ on:
           - patch
 
 jobs:
-  version:
+  create-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -57,7 +57,7 @@ jobs:
           name: Release ${{ steps.get_semver.outputs.next_version }}
           tag: ${{ steps.get_semver.outputs.next_version }}
           generateReleaseNotes: true
-          artifacts: build
+          artifacts: build.zip
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -70,8 +70,8 @@ jobs:
           docker run ghcr.io/dailymotion-oss/octopilot:v1.9.7 \
           --github-token ${{ secrets.DEPLOY_TESTER_REPO_ACCESS_TOKEN }} \
           --repo "thaboRach/deploy-tester" \
-          --update "yaml(file=deployment.yaml,path='frontend.dev')=${{ steps.get_semver.outputs.next_version }}" \
-          --update "yaml(file=deployment.yaml,path='frontend.qa')=${{ steps.get_semver.outputs.next_version }}" \
+          --update "yaml(file=deployment.yml,path='frontend.dev')=${{ steps.get_semver.outputs.next_version }}" \
+          --update "yaml(file=deployment.yml,path='frontend.qa')=${{ steps.get_semver.outputs.next_version }}" \
           --pr-title "Release: Promoting ${{ steps.get_semver.outputs.next_version }} to Dev & QA environment" \
           --pr-base-branch "main" \
           --pr-merge "true"
