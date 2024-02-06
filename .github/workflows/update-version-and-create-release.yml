@@ -46,7 +46,7 @@ jobs:
           files: build/
           dest: build.zip
 
-      - name: Determine current version
+      - name: Determine next version
         uses: rickstaa/action-get-semver@v1
         id: get_semver
         with:
