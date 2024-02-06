@@ -5,6 +5,7 @@ on:
 jobs:
   rollback:
     runs-on: ubuntu-latest
+    environment: rollback
 
     steps:
       - name: Checkout code
@@ -18,7 +19,7 @@ jobs:
           git fetch --tags
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
           previous_major_version=$(echo $latest_tag | cut -d. -f1).0.0
-          echo "::set-output name=previous_version::${previous_major_version}"
+          echo "previous_version=${previous_major_version}" >> $GITHUB_OUTPUT
 
       - name: Get current version
         uses: rickstaa/action-get-semver@v1
