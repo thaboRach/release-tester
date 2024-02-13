@@ -31,7 +31,7 @@ jobs:
 
       - name: Print Current Version
         run: |
-          echo "Previous Version: ${{ steps.get_semver.outputs.current_version }}"
+          echo "Current Version: ${{ steps.get_semver.outputs.current_version }}"
 
       - name: Pull Octopilot image
         run: docker pull ghcr.io/dailymotion-oss/octopilot:v1.9.7
