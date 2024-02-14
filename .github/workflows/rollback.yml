@@ -13,20 +13,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get previous version
-        id: get_previous_semver
-        run: |
-          git fetch --tags
-          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-          previous_major_version=$(echo $latest_tag | grep -Eo '^v[0-9]+' | cut -d'v' -f2).0.0
-          echo "previous_version=${previous_major_version}" >> $GITHUB_OUTPUT
+      # - name: Get previous version
+      #   id: get_previous_semver
+      #   run: |
+      #     git fetch --tags
+      #     latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+      #     previous_major_version=$(echo $latest_tag | grep -Eo '^v[0-9]+' | cut -d'v' -f2).0.0
+      #     echo "previous_version=${previous_major_version}" >> $GITHUB_OUTPUT
 
-      - name: Get Previous version tag
-        id: get_previous_tag
-        run: |
-          previous_major_version=${{ steps.get_previous_semver.outputs.previous_version }}
-          previous_major_tag=$(git describe --tags --abbrev=0 "v$previous_major_version")
-          echo "tag=${previous_major_tag}" >> $GITHUB_OUTPUT
+      # - name: Get Previous version tag
+      #   id: get_previous_tag
+      #   run: |
+      #     previous_major_version=${{ steps.get_previous_semver.outputs.previous_version }}
+      #     previous_major_tag=$(git describe --tags --abbrev=0 "v$previous_major_version")
+      #     echo "tag=${previous_major_tag}" >> $GITHUB_OUTPUT
 
       # - name: Get previous version
       #   id: get_previous_semver
@@ -35,6 +35,19 @@ jobs:
       - name: Get current version
         id: get_semver
         uses: rickstaa/action-get-semver@v1
+
+      - name: Get current major
+        id: get_current_major
+        run: |
+          major=$( ${{ steps.get_semver.outputs.current_version }} | grep -Eo '^v[0-9]+' | cut -d'v' -f2 )
+          echo "tag=${major}" >> $GITHUB_OUTPUT
+
+      - name: Get previous version
+        id: get_previous_semver
+        shell: bash
+        run: |
+          prev=$( ${{ steps.get_current_major.outputs.tag }} + 1" | bc)
+          echo "previous_version=${prev}" >> $GITHUB_OUTPUT
 
       - name: Print Previous Version
         run: |
