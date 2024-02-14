@@ -13,17 +13,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Get previous version
-      #   id: get_previous_semver
-      #   run: |
-      #     git fetch --tags
-      #     latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-      #     previous_major_version=$(echo $latest_tag | cut -d. -f1).0.0
-      #     echo "previous_version=${previous_major_version}" >> $GITHUB_OUTPUT
-
       - name: Get previous version
         id: get_previous_semver
-        uses: sammcoe/get-previous-release-action@v1
+        run: |
+          git fetch --tags
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          previous_major_version=$(echo $latest_tag | cut -d. -f1)
+          previous_major_tag=$(git describe --tags --abbrev=0 $previous_major_version.0.0)
+          echo "previous_version=${previous_major_tag}" >> $GITHUB_OUTPUT
+
+      # - name: Get previous version
+      #   id: get_previous_semver
+      #   uses: sammcoe/get-previous-release-action@v1
 
       - name: Get current version
         id: get_semver
