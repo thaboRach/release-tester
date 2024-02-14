@@ -23,12 +23,11 @@ jobs:
 
       - name: Get previous version
         id: get_previous_semver
-        uses: actions/get-previous-release-action@v1
+        uses: sammcoe/get-previous-release-action@v1
 
       - name: Get current version
         id: get_semver
         uses: rickstaa/action-get-semver@v1
-        
 
       - name: Print Previous Version
         run: |
