@@ -47,15 +47,7 @@ jobs:
         shell: bash
         run: |
           prev=$( echo "${{ steps.get_current_major.outputs.tag }} - 1" | bc)
-          echo "previous_version=${prev}" >> $GITHUB_OUTPUT
-
-      - name: Print Previous Version
-        run: |
-          echo "Previous Version: ${{ steps.get_previous_semver.outputs.previous_version }}"
-
-      - name: Print Previous tag
-        run: |
-          echo "Previous tag: ${{ steps.get_previous_tag.outputs.tag }}"
+          echo "previous_version=v${prev}.0.0" >> $GITHUB_OUTPUT
 
       - name: Print Current Version
         run: |
