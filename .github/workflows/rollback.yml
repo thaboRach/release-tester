@@ -39,7 +39,7 @@ jobs:
       - name: Get current major
         id: get_current_major
         run: |
-          major=$( ${{ steps.get_semver.outputs.current_version }} | grep -Eo '^v[0-9]+' | cut -d'v' -f2 )
+          major=$( echo ${{ steps.get_semver.outputs.current_version }} | grep -Eo '^v[0-9]+' | cut -d'v' -f2 )
           echo "tag=${major}" >> $GITHUB_OUTPUT
 
       - name: Get previous version
