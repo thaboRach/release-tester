@@ -19,7 +19,7 @@ jobs:
           git fetch --tags
           latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
           previous_major_version=$(echo $latest_tag | grep -Eo '^v[0-9]+' | cut -d'v' -f2).0.0
-          echo "previous_version=${previous_major_tag}" >> $GITHUB_OUTPUT
+          echo "previous_version=${previous_major_version}" >> $GITHUB_OUTPUT
 
       # - name: Get previous version
       #   id: get_previous_semver
