@@ -21,6 +21,13 @@ jobs:
           previous_major_version=$(echo $latest_tag | grep -Eo '^v[0-9]+' | cut -d'v' -f2).0.0
           echo "previous_version=${previous_major_version}" >> $GITHUB_OUTPUT
 
+      - name: Get Previous version tag
+        id: get_previous_tag
+        run: |
+          previous_major_version=${{ steps.get_previous_semver.outputs.previous_version }}
+          previous_major_tag=$(git describe --tags --abbrev=0 "v$previous_major_version".0.0)
+          echo "tag=${previous_major_tag}" >> $GITHUB_OUTPUT
+
       # - name: Get previous version
       #   id: get_previous_semver
       #   uses: sammcoe/get-previous-release-action@v1
@@ -33,11 +40,9 @@ jobs:
         run: |
           echo "Previous Version: ${{ steps.get_previous_semver.outputs.previous_version }}"
 
-      - name: Print Previous version tag
+      - name: Print Previous tag
         run: |
-          previous_major_version=${{ steps.get_previous_semver.outputs.previous_version }}
-          previous_major_tag=$(git describe --tags --abbrev=0 "v$previous_major_version".0.0)
-          echo "Previous Version tag:${{previous_major_tag}}"
+          echo "Previous tag: ${{ steps.get_previous_tag.outputs.tag }}"
 
       - name: Print Current Version
         run: |
