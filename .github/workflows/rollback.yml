@@ -33,6 +33,12 @@ jobs:
         run: |
           echo "Previous Version: ${{ steps.get_previous_semver.outputs.previous_version }}"
 
+      - name: Print Previous version tag
+        run: |
+          previous_major_version=${{ steps.get_previous_major_version.outputs.previous_major_version }}
+          previous_major_tag=$(git describe --tags --abbrev=0 "v$previous_major_version".0.0)
+          echo "Previous Version tag:${{previous_major_tag}}"
+
       - name: Print Current Version
         run: |
           echo "Current Version: ${{ steps.get_semver.outputs.current_version }}"
