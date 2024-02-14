@@ -46,7 +46,7 @@ jobs:
         id: get_previous_semver
         shell: bash
         run: |
-          prev=$( "${{ steps.get_current_major.outputs.tag }} + 1" | bc)
+          prev=$( echo "${{ steps.get_current_major.outputs.tag }} - 1" | bc)
           echo "previous_version=${prev}" >> $GITHUB_OUTPUT
 
       - name: Print Previous Version
