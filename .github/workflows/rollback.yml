@@ -36,6 +36,10 @@ jobs:
         id: get_semver
         uses: rickstaa/action-get-semver@v1
 
+      - name: Print Current Version
+        run: |
+          echo "Current Version: ${{ steps.get_semver.outputs.current_version }}"
+
       - name: Get current major
         id: get_current_major
         run: |
@@ -49,9 +53,9 @@ jobs:
           prev=$( echo "${{ steps.get_current_major.outputs.tag }} - 1" | bc)
           echo "previous_version=v${prev}.0.0" >> $GITHUB_OUTPUT
 
-      - name: Print Current Version
+      - name: Print Previous Version
         run: |
-          echo "Current Version: ${{ steps.get_semver.outputs.current_version }}"
+          echo "Previous Version: ${{ steps.get_previous_semver.outputs.previous_version }}"
 
       - name: Pull Octopilot image
         run: docker pull ghcr.io/dailymotion-oss/octopilot:v1.9.7
