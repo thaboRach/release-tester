@@ -25,7 +25,7 @@ jobs:
         id: get_previous_tag
         run: |
           previous_major_version=${{ steps.get_previous_semver.outputs.previous_version }}
-          previous_major_tag=$(git describe --tags --abbrev=0 "v$previous_major_version".0.0)
+          previous_major_tag=$(git describe --tags --abbrev=0 "v$previous_major_version")
           echo "tag=${previous_major_tag}" >> $GITHUB_OUTPUT
 
       # - name: Get previous version
