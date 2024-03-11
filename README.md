@@ -39,6 +39,12 @@ Start the web application locally:
 yarn dev
 ```
 
+## Contributing
+
+We follow the [Conventional Commits Convention](https://www.conventionalcommits.org/en/v1.0.0/), with our own twist.
+
+- To Test : `echo "fix: initial commitlint" | yarn commitlint`
+
 [typescript]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
 [typescript-url]: https://www.typescriptlang.org/
 [react]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
