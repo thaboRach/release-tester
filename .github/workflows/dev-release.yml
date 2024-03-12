@@ -50,7 +50,7 @@ jobs:
           elif [[ $COMMIT_MESSAGE == "fix"* || $COMMIT_MESSAGE == "chore"* || $COMMIT_MESSAGE == "docs"* || $COMMIT_MESSAGE == "style"* || $COMMIT_MESSAGE == "refactor"* || $COMMIT_MESSAGE == "test"* ]]; then
             echo "::set-output name=bump::patch"
           else
-            echo "Error: Unsupported commit type. Please use 'feat', 'fix', 'chore', 'docs', 'style', 'refactor', or 'test' in your commit message."
+            echo "Error: Unsupported commit type '$COMMIT_MESSAGE'. Please use 'feat', 'fix', 'chore', 'docs', 'style', 'refactor', or 'test' in your commit message."
             exit 1
           fi
 
