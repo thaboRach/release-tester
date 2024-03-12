@@ -1,0 +1,85 @@
+name: Dev release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build
+        run: yarn build
+
+      - name: Upload artifact(build)
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build
+
+      - name: Archive artifact
+        uses: vimtor/action-zip@v1
+        with:
+          files: build/
+          dest: build.zip
+
+      - name: Get latest commit message
+        id: get_commit_message
+        run: echo "::set-output name=message::$(git log --format=%B -n 1 ${{ github.sha }})"
+
+      - name: Determine version bump
+        id: determine_version
+        run: |
+          COMMIT_MESSAGE="${{ steps.get_commit_message.outputs.message }}"
+          if [[ $COMMIT_MESSAGE == "feat"* ]]; then
+            echo "::set-output name=bump::minor"
+          elif [[ $COMMIT_MESSAGE == "fix"* || $COMMIT_MESSAGE == "chore"* || $COMMIT_MESSAGE == "docs"* || $COMMIT_MESSAGE == "style"* || $COMMIT_MESSAGE == "refactor"* || $COMMIT_MESSAGE == "test"* ]]; then
+            echo "::set-output name=bump::patch"
+          else
+            echo "Error: Unsupported commit type. Please use 'feat', 'fix', 'chore', 'docs', 'style', 'refactor', or 'test' in your commit message."
+            exit 1
+          fi
+
+      - name: Determine next version
+        uses: rickstaa/action-get-semver@v1
+        id: get_semver
+        with:
+          bump_level: "${{ steps.determine_version.outputs.bump }}"
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          name: Release ${{ steps.get_semver.outputs.next_version }}
+          tag: ${{ steps.get_semver.outputs.next_version }}
+          generateReleaseNotes: true
+          artifacts: build.zip
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull Octopilot image
+        run: docker pull ghcr.io/dailymotion-oss/octopilot:v1.9.7
+
+      - name: Create PR with Octpilot in Deployment repo
+        run: |
+          docker run ghcr.io/dailymotion-oss/octopilot:v1.9.7 \
+          --github-token ${{ secrets.DEPLOY_TESTER_REPO_ACCESS_TOKEN }} \
+          --repo "thaboRach/deploy-tester" \
+          --update "yaml(file=deployment.yml,path='frontend.dev')=${{ steps.get_semver.outputs.next_version }}" \
+          --pr-title "Release: Promoting ${{ steps.get_semver.outputs.next_version }} to Dev environment" \
+          --pr-base-branch "main" \
+          --pr-merge "true"

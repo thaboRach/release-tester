@@ -1,16 +1,7 @@
-name: Non-Prod release
+name: QA release
 
 on:
   workflow_dispatch:
-    inputs:
-      version-bump:
-        description: "Version name"
-        required: true
-        default: "patch"
-        type: choice
-        options:
-          - minor
-          - patch
 
 jobs:
   create-release:
@@ -44,17 +35,15 @@ jobs:
           files: build/
           dest: build.zip
 
-      - name: Determine next version
-        uses: rickstaa/action-get-semver@v1
+      - name: Get current version
         id: get_semver
-        with:
-          bump_level: "${{github.event.inputs.version-bump}}"
+        uses: rickstaa/action-get-semver@v1
 
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          name: Release ${{ steps.get_semver.outputs.next_version }}
-          tag: ${{ steps.get_semver.outputs.next_version }}
+          name: Release ${{ steps.get_semver.outputs.current_version }}
+          tag: ${{ steps.get_semver.outputs.current_version }}
           generateReleaseNotes: true
           artifacts: build.zip
 
@@ -69,8 +58,7 @@ jobs:
           docker run ghcr.io/dailymotion-oss/octopilot:v1.9.7 \
           --github-token ${{ secrets.DEPLOY_TESTER_REPO_ACCESS_TOKEN }} \
           --repo "thaboRach/deploy-tester" \
-          --update "yaml(file=deployment.yml,path='frontend.dev')=${{ steps.get_semver.outputs.next_version }}" \
-          --update "yaml(file=deployment.yml,path='frontend.qa')=${{ steps.get_semver.outputs.next_version }}" \
-          --pr-title "Release: Promoting ${{ steps.get_semver.outputs.next_version }} to Dev & QA environment" \
+          --update "yaml(file=deployment.yml,path='frontend.qa')=${{ steps.get_semver.outputs.current_version }}" \
+          --pr-title "Release: Promoting ${{ steps.get_semver.outputs.current_version }} to QA environment" \
           --pr-base-branch "main" \
           --pr-merge "true"
