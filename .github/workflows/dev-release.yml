@@ -39,12 +39,12 @@ jobs:
 
       - name: Print Commit message
         run: |
-          echo "Commit messages: ${{ github.event.commits[1].message }}"
+          echo "Commit messages: ${{ toJSON(github.event.commits) }}"
 
       - name: Determine version bump
         id: determine_version
         run: |
-          COMMIT_MESSAGE="${{ github.event.commits[1].message }}"
+          COMMIT_MESSAGE="${{ github.event.commits[2].message }}"
           if [[ $COMMIT_MESSAGE == "feat"* ]]; then
             echo "::set-output name=bump::minor"
           elif [[ $COMMIT_MESSAGE == "fix"* || $COMMIT_MESSAGE == "chore"* || $COMMIT_MESSAGE == "docs"* || $COMMIT_MESSAGE == "style"* || $COMMIT_MESSAGE == "refactor"* || $COMMIT_MESSAGE == "test"* ]]; then
