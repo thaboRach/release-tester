@@ -1,9 +1,9 @@
 function App() {
   return (
-    <main className="flex items-center justify-center w-full min-h-screen gap-y-2">
-      <h1 className="text-4xl">Release Tester</h1>
-      <h2 className="text-2xl">Subheading</h2>
-      <p className="text-base text-red-600">
+    <main className="flex flex-col items-center w-full min-h-screen pt-10 bg-gray-800 gap-y-2">
+      <h1 className="text-4xl text-slate-100">Release Tester</h1>
+      <h2 className="text-2xl text-slate-100">Subheading</h2>
+      <p className="text-base text-slate-100">
         Used to create tags and releases for a React application
       </p>
     </main>
