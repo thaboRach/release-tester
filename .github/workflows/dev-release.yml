@@ -37,6 +37,10 @@ jobs:
           files: build/
           dest: build.zip
 
+      - name: Print Commit message
+        run: |
+          echo "Commit messages: ${{ github.event.commits }}"
+
       - name: Determine version bump
         id: determine_version
         run: |
