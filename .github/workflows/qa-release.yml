@@ -12,43 +12,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: yarn
-
-      - name: Build
-        run: yarn build
-
-      - name: Upload artifact(build)
-        uses: actions/upload-artifact@v3
-        with:
-          name: build
-          path: build
-
-      - name: Archive artifact
-        uses: vimtor/action-zip@v1
-        with:
-          files: build/
-          dest: build.zip
-
       - name: Get current version
         id: get_semver
         uses: rickstaa/action-get-semver@v1
-
-      - name: Create Release
-        uses: ncipollo/release-action@v1
-        with:
-          name: Release ${{ steps.get_semver.outputs.current_version }}
-          tag: ${{ steps.get_semver.outputs.current_version }}
-          generateReleaseNotes: true
-          artifacts: build.zip
-
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull Octopilot image
         run: docker pull ghcr.io/dailymotion-oss/octopilot:v1.9.7
