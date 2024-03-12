@@ -39,7 +39,7 @@ jobs:
 
       - name: Print Commit message
         run: |
-          echo "Commit messages: ${{ github.event.commits[1] }}"
+          echo "Commit messages: ${{ github.event.commits[1].message }}"
 
       - name: Determine version bump
         id: determine_version
