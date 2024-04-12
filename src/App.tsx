@@ -6,6 +6,7 @@ function App() {
       <p className="text-base text-slate-100">
         Used to create tags and releases for a React application
       </p>
+      <p className="text-base text-slate-100" >Also now includes commitlint</p>
     </main>
   );
 }
