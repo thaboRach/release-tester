@@ -25,7 +25,7 @@ const Configuration: UserConfig = {
           if (when === "never") {
             result = !result;
           }
-          return [result, `Scope should follow the pattern SMME-XXXX`];
+          return [result, `Scope should follow the pattern TEST-XXXX`];
         },
       },
     },
