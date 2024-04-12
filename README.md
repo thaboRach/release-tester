@@ -43,7 +43,30 @@ yarn dev
 
 We follow the [Conventional Commits Convention](https://www.conventionalcommits.org/en/v1.0.0/), with our own twist.
 
-- To Test : `echo "fix: initial commitlint" | yarn commitlint`
+The commit message should be structed as follows:
+   
+   ``` <type>(<scope>): <description> ```
+
+### Type
+The type has to be one of the following:
+
+1. **fix:** A patch for a bug (correlates with **PATCH** in Semantic Versioning)
+   - Other types such as `chore:`, `docs:`, `style:`, `refactor:` and `test:` are also allowed.
+2. **feat:** Introduces a new feature to the codebase (correlates with **MINOR** in Semantic Versioning)
+
+### Scope
+The scope used to indicate which ticket the commit belongs to for auditing reasons:
+
+   ``` TEST-XXXX ```
+
+### Description
+The description is a short summary of the code changes, e.g., __array parsing issue when multiple spaces were contained in string.__
+
+### Example
+
+- `fix(TEST-0001): Button not working`: Indicates that you are making a bug fix.
+- `feat(TEST-0002): Add details page`: Indicates that you are add a new feature.
+
 
 [typescript]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
 [typescript-url]: https://www.typescriptlang.org/
