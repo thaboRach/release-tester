@@ -1,0 +1,65 @@
+name: HotFix release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    environment: hotfix
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build
+        run: yarn build
+
+      - name: Upload artifact(build)
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build
+
+      - name: Archive artifact
+        uses: vimtor/action-zip@v1
+        with:
+          files: build/
+          dest: build.zip
+
+      - name: Determine current version
+        uses: rickstaa/action-get-semver@v1
+        id: get_semver
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          name: Release ${{ steps.get_semver.outputs.current_version }}-hotfix
+          tag: ${{ steps.get_semver.outputs.current_version }}-hotfix
+          generateReleaseNotes: true
+          artifacts: build.zip
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull Octopilot image
+        run: docker pull ghcr.io/dailymotion-oss/octopilot:v1.9.7
+
+      - name: Create PR with Octpilot in Deployment repo
+        run: |
+          docker run ghcr.io/dailymotion-oss/octopilot:v1.9.7 \
+          --github-token ${{ secrets.DEPLOY_TESTER_REPO_ACCESS_TOKEN }} \
+          --repo "thaboRach/deploy-tester" \
+          --update "yaml(file=deployment.yml,path='frontend.prod')=${{ steps.get_semver.outputs.current_version }}-hotfix" \
+          --pr-title "Release: Promoting ${{ steps.get_semver.outputs.current_version }}-hotfix to Prod environment" \
+          --pr-base-branch "main" \
+          --pr-merge "true"
