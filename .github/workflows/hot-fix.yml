@@ -40,11 +40,27 @@ jobs:
         uses: rickstaa/action-get-semver@v1
         id: get_semver
 
+      - name: Print Current Version
+        run: |
+          echo "Current Version: ${{ steps.get_semver.outputs.current_version }}"
+
+      - name: Get current major
+        id: get_current_major
+        run: |
+          major=$( echo ${{ steps.get_semver.outputs.current_version }} | grep -Eo '^v[0-9]+' | cut -d'v' -f2 )
+          echo "tag=${major}" >> $GITHUB_OUTPUT
+
+      - name: Get current semver
+        id: get_current_semver
+        run: |
+          current=$( echo ${{ steps.get_current_major.outputs.tag }} )
+          echo "version=v${current}.0.0-hotfix" >> $GITHUB_OUTPUT
+
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          name: Release ${{ steps.get_semver.outputs.current_version }}-hotfix
-          tag: ${{ steps.get_semver.outputs.current_version }}-hotfix
+          name: Release ${{ steps.get_current_semver.outputs.version }}
+          tag: ${{ steps.get_current_semver.outputs.version }}
           generateReleaseNotes: true
           artifacts: build.zip
 
@@ -59,7 +75,7 @@ jobs:
           docker run ghcr.io/dailymotion-oss/octopilot:v1.9.7 \
           --github-token ${{ secrets.DEPLOY_TESTER_REPO_ACCESS_TOKEN }} \
           --repo "thaboRach/deploy-tester" \
-          --update "yaml(file=deployment.yml,path='frontend.prod')=${{ steps.get_semver.outputs.current_version }}-hotfix" \
-          --pr-title "Release: Promoting ${{ steps.get_semver.outputs.current_version }}-hotfix to Prod environment" \
+          --update "yaml(file=deployment.yml,path='frontend.prod')=${{ steps.get_current_semver.outputs.version }}" \
+          --pr-title "Release: Promoting ${{ steps.get_current_semver.outputs.version }} to Prod environment" \
           --pr-base-branch "main" \
           --pr-merge "true"
