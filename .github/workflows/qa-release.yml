@@ -8,13 +8,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Get current version
         id: get_semver
         uses: rickstaa/action-get-semver@v1
+
+      - name: Print current version
+        run: |
+          echo "Version: ${{ steps.get_semver.outputs.current_version }}"
 
       - name: Pull Octopilot image
         run: docker pull ghcr.io/dailymotion-oss/octopilot:v1.9.7
